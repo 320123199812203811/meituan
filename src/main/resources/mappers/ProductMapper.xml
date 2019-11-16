@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.niit.meituan.dao.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.niit.meituan.model.Product">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="desc" jdbcType="VARCHAR" property="desc" />
+    <result column="price1" jdbcType="DOUBLE" property="price1" />
+    <result column="price2" jdbcType="DOUBLE" property="price2" />
+    <result column="shopid" jdbcType="INTEGER" property="shopid" />
+    <result column="shopimg" jdbcType="VARCHAR" property="shopimg" />
+    <result column="shopname" jdbcType="VARCHAR" property="shopname" />
+
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.niit.meituan.model.Product">
+    insert into product (id, name, img, 
+      desc, price1, price2, 
+      discount)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, 
+      #{desc,jdbcType=VARCHAR}, #{price1,jdbcType=DOUBLE}, #{price2,jdbcType=DOUBLE}, 
+      #{discount,jdbcType=DOUBLE})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.niit.meituan.model.Product">
+    update product
+    set name = #{name,jdbcType=VARCHAR},
+      img = #{img,jdbcType=VARCHAR},
+      desc = #{desc,jdbcType=VARCHAR},
+      price1 = #{price1,jdbcType=DOUBLE},
+      price2 = #{price2,jdbcType=DOUBLE},
+      discount = #{discount,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select id, name, img, desc, price1, price2, discount
+    from product
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select *
+    from product
+  </select>
+</mapper>

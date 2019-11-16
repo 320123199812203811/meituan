@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.niit.meituan.dao.ShopSummaryMapper">
+  <resultMap id="BaseResultMap" type="com.niit.meituan.model.ShopSummary">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="rate" jdbcType="DOUBLE" property="rate" />
+    <result column="sales" jdbcType="INTEGER" property="sales" />
+    <result column="average" jdbcType="DOUBLE" property="average" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from shop_summary
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.niit.meituan.model.ShopSummary">
+    replace into shop_summary (shop_id, rate,
+      sales, average)
+    values (#{shopId,jdbcType=INTEGER}, #{rate,jdbcType=DOUBLE},
+      #{sales,jdbcType=INTEGER}, #{average,jdbcType=DOUBLE})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.niit.meituan.model.ShopSummary">
+    update shop_summary
+    set shop_id = #{shopId,jdbcType=INTEGER},
+      rate = #{rate,jdbcType=DOUBLE},
+      sales = #{sales,jdbcType=INTEGER},
+      average = #{average,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, shop_id, rate, sales, average
+    from shop_summary
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, shop_id, rate, sales, average
+    from shop_summary
+  </select>
+</mapper>

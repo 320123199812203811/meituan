@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.niit.meituan.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.niit.meituan.model.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="amount" jdbcType="DOUBLE" property="amount" />
+    <result column="order_state" jdbcType="INTEGER" property="orderState" />
+    <result column="order_time" jdbcType="DATE" property="orderTime" />
+    <result column="last_modify" jdbcType="DOUBLE" property="lastModify" />
+  </resultMap>
+  <!--自定义 OrderDTO的map-->
+  <resultMap id="orderMap" type="com.niit.meituan.dto.OrderDTO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="amount" jdbcType="DOUBLE" property="amount" />
+    <result column="order_state" jdbcType="INTEGER" property="orderState" />
+    <result column="order_time" jdbcType="DATE" property="orderTime" />
+    <result column="last_modify" jdbcType="DOUBLE" property="lastModify" />
+
+    <result column="shopName" jdbcType="VARCHAR" property="shopName" />
+    <result column="shopImg" jdbcType="VARCHAR" property="shopImg" />
+
+    <collection property="orderDetails" ofType="com.niit.meituan.dto.OrderDetailDTO">
+      <id column="order_details_id" jdbcType="INTEGER" property="id" />
+      <result column="order_id" jdbcType="INTEGER" property="orderId" />
+      <result column="product_id" jdbcType="INTEGER" property="productId" />
+      <result column="product_quantity" jdbcType="VARCHAR" property="productQuantity" />
+      <result column="product_price" jdbcType="DOUBLE" property="productPrice" />
+      <result column="is_good" jdbcType="INTEGER" property="isGood" />
+
+      <result column="productName" jdbcType="VARCHAR" property="productName" />
+    </collection>
+  </resultMap>
+
+<select id="getOrders" resultMap="orderMap">
+        select
+            o.id,
+            o.order_no,
+            o.user_id,
+            o.shop_id,
+            o.quantity,
+            o.amount,
+            o.order_state,
+            o.order_time,
+            o.last_modify,
+            s.name shopName,
+            s.img shopImg,
+            od.id order_details_id,
+            od.order_id,
+            od.product_id,
+            od.product_quantity,
+            od.product_price,
+            od.is_good,
+            p.name productName
+        from
+            `order` o,
+            order_detail od,
+            shop s,
+            product  p
+        where o.id = od.order_id
+        and   o.shop_id = s.id
+        and   od.product_id = p.id
+        and   o.user_id = #{userId}
+        <if test="orderSate!=null">
+          and o.order_state = #{orderSate}
+        </if>
+</select>
+
+    <select id="getShopRate" resultType="com.niit.meituan.model.ShopSummary">
+        select
+            o.shop_id shopId,
+            avg(e.rate) rate
+        from
+            evaluate e,
+            `order`  o
+        where e.order_id = o.id
+        group by shop_id
+    </select>
+
+    <select id="getShopSales" resultType="com.niit.meituan.model.ShopSummary">
+        select
+            shop_id shopId,
+            count(shop_id) sales
+        from `order`
+        where
+            order_time <![CDATA[ > ]]> DATE_SUB(CURDATE(),INTERVAL 30 DAY)
+        and
+            order_time <![CDATA[<=]]> CURDATE()
+        group by shop_id
+    </select>
+
+    <select id="getShopAverage" resultType="com.niit.meituan.model.ShopSummary">
+        select
+            shop_id shopId,
+            avg(amount) average
+        from `order`
+        group by shop_id
+    </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.niit.meituan.model.Order">
+    insert into order (id, order_no, user_id, 
+      shop_id, quantity, amount, 
+      order_state, order_time, last_modify
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{shopId,jdbcType=INTEGER}, #{quantity,jdbcType=INTEGER}, #{amount,jdbcType=DOUBLE}, 
+      #{orderState,jdbcType=INTEGER}, #{orderTime,jdbcType=DATE}, #{lastModify,jdbcType=DOUBLE}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.niit.meituan.model.Order">
+    update order
+    set order_no = #{orderNo,jdbcType=VARCHA
+      user_id = #{userId,jdbcType=INTEGER},
+      shop_id = #{shopId,jdbcType=INTEGER},
+      quantity = #{quantity,jdbcType=INTEGER},
+      amount = #{amount,jdbcType=DOUBLE},
+      order_state = #{orderState,jdbcType=INTEGER},
+      order_time = #{orderTime,jdbcType=DATE},
+      last_modify = #{lastModify,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, order_no, user_id, shop_id, quantity, amount, order_state, order_time, 
+    last_modify
+    from order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, order_no, user_id, shop_id, quantity, amount, order_state, order_time, 
+    last_modify
+    from order
+  </select>
+</mapper>

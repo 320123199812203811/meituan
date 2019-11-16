@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.niit.meituan.dao.OrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.niit.meituan.model.OrderDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="product_quantity" jdbcType="VARCHAR" property="productQuantity" />
+    <result column="product_price" jdbcType="DOUBLE" property="productPrice" />
+    <result column="is_good" jdbcType="INTEGER" property="isGood" />
+
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.niit.meituan.model.OrderDetail">
+    insert into order_detail (id, order_id, product_id, 
+      product_quantity, product_price, is_good
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, 
+      #{productQuantity,jdbcType=VARCHAR}, #{productPrice,jdbcType=DOUBLE}, #{isGood,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.niit.meituan.model.OrderDetail">
+    update order_detail
+    set order_id = #{orderId,jdbcType=INTEGER},
+      product_id = #{productId,jdbcType=INTEGER},
+      product_quantity = #{productQuantity,jdbcType=VARCHAR},
+      product_price = #{productPrice,jdbcType=DOUBLE},
+      is_good = #{isGood,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, order_id, product_id, product_quantity, product_price, is_good
+    from order_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, order_id, product_id, product_quantity, product_price, is_good
+    from order_detail
+  </select>
+</mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.niit.meituan.dao.ShopMapper">
+
+    <resultMap id="BaseResultMap" type="com.niit.meituan.model.Shop">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="desc" jdbcType="VARCHAR" property="desc" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="ad" jdbcType="VARCHAR" property="ad" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="minDisPrice" jdbcType="DOUBLE" property="mindisprice" />
+    <result column="deliveryPrice1" jdbcType="DOUBLE" property="deliveryprice1" />
+    <result column="deliveryPrice2" jdbcType="DOUBLE" property="deliveryprice2" />
+    <result column="isMeituan" jdbcType="INTEGER" property="ismeituan" />
+
+
+  </resultMap>
+
+  <resultMap id="shopMap" type="com.niit.meituan.dto.ShopDTO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="desc" jdbcType="VARCHAR" property="desc" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="ad" jdbcType="VARCHAR" property="ad" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="minDisPrice" jdbcType="DOUBLE" property="mindisprice" />
+    <result column="deliveryprice1" jdbcType="DOUBLE" property="deliveryprice1" />
+    <result column="deliveryprice2" jdbcType="DOUBLE" property="deliveryprice2" />
+    <result column="ismeituan" jdbcType="INTEGER" property="ismeituan" />
+
+
+
+    <result column="sales" jdbcType="INTEGER" property="sales" />
+    <result column="rate" jdbcType="DOUBLE" property="rate" />
+    <result column="average" jdbcType="DOUBLE" property="average" />
+
+
+      <collection property="product"  ofType="com.niit.meituan.model.Product"  javaType="java.util.ArrayList">
+          <id column="product_id" jdbcType="VARCHAR" property="id" />
+          <result column="product_name" jdbcType="VARCHAR" property="name" />
+          <result column="product_img" jdbcType="VARCHAR" property="img" />
+          <result column="price1" jdbcType="DOUBLE" property="price1" />
+          <result column="price2" jdbcType="DOUBLE" property="price2" />
+          <result column="shopid" jdbcType="INTEGER" property="shopid" />
+          <result column="shopimg" jdbcType="VARCHAR" property="shopimg" />
+          <result column="shopname" jdbcType="VARCHAR" property="shopname" />
+      </collection>
+
+  </resultMap>
+    <select id="getSelect"  resultMap="shopMap">
+        select
+            s.id,
+            s.name,
+            s.address,
+            s.desc,
+            s.img,
+            s.ad,
+            s.category,
+            s.minDisPrice,
+            s.deliveryPrice1 deliveryprice1,
+                s.deliveryPrice2 deliveryprice2,
+                s.isMeituan ismeituan,
+
+                ss.sales sales,
+                ss.rate rate,
+                ss.average average,
+            p.id product_id,
+            p.name product_name,
+                p.img product_img,
+                p.price1,
+                p.price2,
+                p.shopimg,
+                p.shopname
+
+        from
+            `shop` s,
+             shop_summary ss ,
+            product  p
+        where p.shopid=s.id and ss.shop_id=s.id
+        order by ss.rate desc
+
+    </select>
+
+
+  <select id="getShops" resultMap="shopMap">
+       select
+            sp.*,
+            sm.rate,
+            sm.sales,
+            sm.average
+      from shop sp left join shop_summary sm
+      on   sp.id = sm.shop_id
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from shop
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.niit.meituan.model.Shop">
+    insert into shop (`name`, address,
+      `desc`, img, ad, category,
+      minDisPrice, deliveryPrice1, deliveryPrice2, 
+      isMeituan)
+    values (#{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{desc,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{ad,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, 
+      #{mindisprice,jdbcType=DOUBLE}, #{deliveryprice1,jdbcType=DOUBLE}, #{deliveryprice2,jdbcType=DOUBLE}, 
+      #{ismeituan,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.niit.meituan.model.Shop">
+    update shop
+    set `name` = #{name,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      `desc` = #{desc,jdbcType=VARCHAR},
+      img = #{img,jdbcType=VARCHAR},
+      ad = #{ad,jdbcType=VARCHAR},
+      category = #{category,jdbcType=VARCHAR},
+      minDisPrice = #{mindisprice,jdbcType=DOUBLE},
+      deliveryPrice1 = #{deliveryprice1,jdbcType=DOUBLE},
+      deliveryPrice2 = #{deliveryprice2,jdbcType=DOUBLE},
+      isMeituan = #{ismeituan,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, name, address, desc, img, ad, category, minDisPrice, deliveryPrice1, deliveryPrice2, 
+    isMeituan
+    from shop
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, address, desc, img, ad, category, minDisPrice, deliveryPrice1, deliveryPrice2, 
+    isMeituan
+    from shop
+  </select>
+
+</mapper>

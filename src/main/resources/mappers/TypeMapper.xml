@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.niit.meituan.dao.TypeMapper" >
+  <resultMap id="BaseResultMap" type="com.niit.meituan.model.Type" >
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="img" jdbcType="VARCHAR" property="img" />
+      <result column="number" jdbcType="INTEGER" property="number" />
+      <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+  </resultMap>
+
+    <resultMap id="typeMap" type="com.niit.meituan.dto.TypeFoodsDTO" >
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="img" jdbcType="VARCHAR" property="img" />
+        <result column="number" jdbcType="INTEGER" property="number" />
+        <result column="shop_id" jdbcType="INTEGER" property="shopId" />
+        <collection property="foods" ofType="com.niit.meituan.model.Foods">
+            <id column="food_id" jdbcType="INTEGER" property="id" />
+            <result column="type_id" jdbcType="INTEGER" property="typeId" />
+            <result column="food_quantity" jdbcType="INTEGER" property="quantity" />
+            <result column="food_name" jdbcType="VARCHAR" property="name" />
+            <result column="food_price" jdbcType="DOUBLE" property="price" />
+            <result column="food_img" jdbcType="VARCHAR" property="img" />
+        </collection>
+    </resultMap>
+    <select id="getType" resultMap="typeMap">
+        select
+        t.id,
+        t.name,
+        t.img,
+        t.number,
+        t.shop_id,
+        f.id food_id,
+        f.quantity food_quantity,
+        f.name food_name,
+        f.price food_price,
+        f.img food_img
+        from
+        `type` t,
+        foods  f
+        where t.id = f.type_id
+        and    t.shop_id = #{shopId}
+    </select>
+
+
+
+
+
+
+
+
+
+
+
+  <sql id="Base_Column_List" >
+    id, name, img, number, shop_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from clm..type
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from clm..type
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.niit.meituan.model.Type" >
+    insert into clm..type (id, name, img, 
+      number, shop_id)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, 
+      #{number,jdbcType=INTEGER}, #{shopId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.niit.meituan.model.Type" >
+    insert into clm..type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="img != null" >
+        img,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="shopId != null" >
+        shop_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null" >
+        #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="shopId != null" >
+        #{shopId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.niit.meituan.model.Type" >
+    update clm..type
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null" >
+        img = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="shopId != null" >
+        shop_id = #{shopId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.niit.meituan.model.Type" >
+    update clm..type
+    set name = #{name,jdbcType=VARCHAR},
+      img = #{img,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      shop_id = #{shopId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
