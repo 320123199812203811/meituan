@@ -14,4 +14,5 @@ public class MeituanApplication {
         SpringApplication.run(MeituanApplication.class, args);
     }
 
+    String a ="helloworld";
 }
