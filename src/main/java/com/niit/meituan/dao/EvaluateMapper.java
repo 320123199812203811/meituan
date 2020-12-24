@@ -13,4 +13,6 @@ public interface EvaluateMapper {
     List<Evaluate> selectAll();
 
     int updateByPrimaryKey(Evaluate record);
+
+    void test();
 }
